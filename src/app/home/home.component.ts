@@ -10,7 +10,14 @@ export class HomeComponent {
   constructor(private auth: AuthService, private router: Router) {}
 
   logout() {
-    this.auth.logout();
-    this.router.navigate(['/login']);
+    this.auth.logout().subscribe({
+      next: () => {
+        console.log('Logout success');
+        this.router.navigate(['/login']);
+      },
+      error: (err) => {
+        console.error('Logout failed', err);
+      },
+    });
   }
 }

@@ -1,40 +1,47 @@
 import { Component } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { AuthService } from '../auth.service';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './login.component.html',
+  imports: [FormsModule],
+  template: `
+    <form (ngSubmit)="onSubmit()">
+      <input
+        type="email"
+        [(ngModel)]="email"
+        name="email"
+        placeholder="Email"
+        required
+      />
+      <input
+        type="password"
+        [(ngModel)]="password"
+        name="password"
+        placeholder="Hasło"
+        required
+      />
+      <button type="submit">Login</button>
+    </form>
+  `,
 })
 export class LoginComponent {
-  loginForm: FormGroup;
-  submitted = false;
+  email = '';
+  password = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private auth: AuthService,
-    private router: Router
-  ) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-    });
-  }
+  constructor(private auth: AuthService, private router: Router) {}
 
   onSubmit() {
-    this.submitted = true;
-    if (this.loginForm.valid) {
-      this.auth.login();
-      this.router.navigate(['/home']);
+    if (this.email && this.password) {
+      this.auth.login(this.email, this.password).subscribe({
+        next: () => {
+          console.log('Login success');
+          this.router.navigate(['/home']);
+        },
+        error: (err) => console.error('Login failed', err),
+      });
     }
   }
 }
