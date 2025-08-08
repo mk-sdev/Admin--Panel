@@ -1,0 +1,21 @@
+<h2>Logowanie</h2>
+
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Email:</label>
+    <input type="email" formControlName="email" />
+    <div *ngIf="submitted && loginForm.controls['email'].invalid">
+      Podaj poprawny adres email.
+    </div>
+  </div>
+
+  <div>
+    <label>Hasło:</label>
+    <input type="password" formControlName="password" />
+    <div *ngIf="submitted && loginForm.controls['password'].invalid">
+      Hasło jest wymagane.
+    </div>
+  </div>
+
+  <button type="submit">Zaloguj</button>
+</form>
