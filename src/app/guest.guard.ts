@@ -2,14 +2,20 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
-export const guestGuard: CanActivateFn = () => {
+export const guestGuard: CanActivateFn = async () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-//   if (!auth.isLoggedIn()) {
-//     return true; // można wejść na login
-//   }
-
-  router.navigate(['/home']); // jeśli zalogowany → od razu na home
-  return false;
+  try {
+    const loggedIn = await auth.isLoggedIn();
+    if (loggedIn) {
+      return true;
+    } else {
+      router.navigate(['/home']);
+      return false;
+    }
+  } catch {
+    router.navigate(['/home']);
+    return false;
+  }
 };

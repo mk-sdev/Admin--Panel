@@ -1,22 +1,33 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
+import { ApiService } from './api.service';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private apiUrl = 'http://localhost:3000';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private apiService: ApiService) {}
 
   login(email: string, password: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'x-app-platform': 'web',
+    });
+
     return this.http.patch(
-      `${this.apiUrl}/login`,
+      `${this.apiUrl}/protected/login`,
       { email, password },
-      { withCredentials: true }
+      { headers, withCredentials: true }
     );
   }
+
   checkSession(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/me`, { withCredentials: true });
+    return this.apiService.requestWithAuthRetry(
+      'GET',
+      `${this.apiUrl}/is-logged`
+    );
   }
 
   isLoggedIn(): Promise<boolean> {
@@ -25,11 +36,13 @@ export class AuthService {
       .catch(() => false);
   }
 
-  logout() {
-    return this.http.patch(
-      `${this.apiUrl}/logout`,
-      {},
-      { withCredentials: true }
+  router = inject(Router);
+
+  logout(): Observable<any> {
+    this.router.navigate(['/login']);
+    return this.apiService.requestWithAuthRetry(
+      'PATCH',
+      `${this.apiUrl}/logout`
     );
   }
 }
