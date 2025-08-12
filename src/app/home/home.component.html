@@ -1,58 +1,64 @@
-<h2>Witaj w Home!</h2>
-<p>Jesteś zalogowany.</p>
-<button (click)="logout()">Wyloguj</button>
+<div>
+  <app-navbar></app-navbar>
 
-<div class="container">
-  <div class="user-list">
-    <span>Lista użytkowników</span>
-    <div
-      *ngFor="let user of userItems; trackBy: trackByUserId"
-      class="user-item"
-      (click)="showUser(user._id)"
-    >
-      {{ user.email }}
-    </div>
-  </div>
-  <div *ngIf="user" class="user">
-    <input
-      type="text"
-      [(ngModel)]="searchQuery"
-      placeholder="Search by id or email"
-    />
-    <button [disabled]="!searchQuery" (click)="findUser()">search</button>
-    <span *ngIf="error">{{ error }}</span>
-    <button (click)="editMode = !editMode">edit</button>
-    <div>_id: {{ user._id }}</div>
-    <div *ngIf="!editMode">Email: {{ user.email }}</div>
-
-    <div *ngIf="editMode">
-      <label>
-        Email:
-        <input type="email" [(ngModel)]="user.email" placeholder="Enter email"
-      /></label>
+  <div class="container">
+    <div class="user-list">
+      <h3>List of users</h3>
+      <div
+        *ngFor="let user of userItems; trackBy: trackByUserId"
+        class="user-item"
+        (click)="showUser(user._id)"
+      >
+        {{ user.email }}
+      </div>
     </div>
 
-    <div *ngIf="!editMode">Roles: {{ user.roles }}</div>
-
-    <div *ngIf="editMode">
-      Roles:
-      <label *ngFor="let role of rolesList">
+    <div *ngIf="user" class="user">
+      <div>
         <input
-          type="checkbox"
-          [disabled]="role === 'USER'"
-          [value]="role"
-          (change)="onRoleChange($event)"
-          [checked]="user.roles.includes(role)"
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="Search by id or email"
         />
-        {{ role }}
-      </label>
-    </div>
-    <div>Provider: {{ user.provider }}</div>
-    <div>isVerified: {{ user.isVerified }}</div>
+        <button [disabled]="!searchQuery" (click)="findUser()">search</button>
+      </div>
+      <span *ngIf="error">{{ error }}</span>
 
-    <button *ngIf="editMode" (click)="saveUser()">Save</button>
-    <button (click)="logUserOut()">log out</button>
-    <input type="text" [(ngModel)]="newPassword" placeholder="New Password" />
-    <button (click)="changePassword()">Confirm new password</button>
+      <div id="user-attributes">
+        <button (click)="editMode = !editMode">edit</button>
+        <div>_id: {{ user._id }}</div>
+        <div *ngIf="!editMode">Email: {{ user.email }}</div>
+        <div *ngIf="editMode">
+          <label>
+            Email:
+            <input
+              type="email"
+              [(ngModel)]="user.email"
+              placeholder="Enter email"
+          /></label>
+        </div>
+        <div *ngIf="!editMode">Roles: {{ user.roles }}</div>
+        <div *ngIf="editMode">
+          Roles:
+          <label *ngFor="let role of rolesList">
+            <input
+              type="checkbox"
+              [disabled]="role === 'USER'"
+              [value]="role"
+              (change)="onRoleChange($event)"
+              [checked]="user.roles.includes(role)"
+            />
+            {{ role }}
+          </label>
+        </div>
+        <div>Provider: {{ user.provider }}</div>
+        <div>isVerified: {{ user.isVerified }}</div>
+      </div>
+
+      <button *ngIf="editMode" (click)="saveUser()">Save</button>
+      <button (click)="logUserOut()">log out</button>
+      <input type="text" [(ngModel)]="newPassword" placeholder="New Password" />
+      <button (click)="changePassword()">Confirm new password</button>
+    </div>
   </div>
 </div>

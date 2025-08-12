@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
 import { apiUrl } from '../app.config';
-import { AuthService } from '../auth.service';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 // TODOs:
 // mark a user it it's you
@@ -31,14 +30,12 @@ enum Roles {
 }
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NavbarComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
   constructor(
-    private auth: AuthService,
-    private router: Router,
     private apiService: ApiService
   ) {}
 
@@ -162,17 +159,5 @@ export class HomeComponent implements OnInit {
           this.userItems = response.body as ListItem[];
         },
       });
-  }
-
-  logout() {
-    this.auth.logout().subscribe({
-      next: () => {
-        console.log('Logout success');
-        this.router.navigate(['/login']);
-      },
-      error: (err) => {
-        console.error('Logout failed', err);
-      },
-    });
   }
 }
