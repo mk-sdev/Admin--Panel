@@ -1,13 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ApiService } from '../api.service';
 import { apiUrl } from '../app.config';
+import { AuthService } from '../auth.service';
 
 // TODOs:
-// use api.service for all api calls
 // optimize the list
 // create Roles enum
 // mark a user it it's you
@@ -24,6 +23,8 @@ type SelectedUser = {
   isVerified: boolean;
   provider: string;
 } | null;
+
+type ListItem = { _id: string; email: string };
 @Component({
   selector: 'app-home',
   imports: [CommonModule, FormsModule],
@@ -34,11 +35,11 @@ export class HomeComponent implements OnInit {
   constructor(
     private auth: AuthService,
     private router: Router,
-    private http: HttpClient
+    private apiService: ApiService
   ) {}
 
   // display in the list
-  userItems: { _id: string; email: string }[] = [];
+  userItems: ListItem[] = [];
   user: SelectedUser = null;
   editMode = false;
   rolesList = ['USER', 'ADMIN'];
@@ -47,17 +48,15 @@ export class HomeComponent implements OnInit {
     if (!this.user) return;
     const { _id, ...userWithoutId } = this.user;
 
-    this.http
-      .put<SelectedUser>(
-        apiUrl + '/protected/user/' + this.user._id,
-        userWithoutId,
-        {
-          withCredentials: true,
-        }
+    this.apiService
+      .requestWithAuthRetry(
+        'PUT',
+        `${apiUrl}/protected/user/${_id}`,
+        userWithoutId
       )
       .subscribe({
-        next: (updatedUser) => {
-          this.user = updatedUser;
+        next: (response) => {
+          this.user = response.body as SelectedUser;
           this.editMode = false;
           console.log('User updated successfully');
         },
@@ -83,12 +82,18 @@ export class HomeComponent implements OnInit {
   }
 
   showUser(_id: string) {
-    this.http
-      .get<SelectedUser>(apiUrl + '/protected/user/id/' + _id, {
-        withCredentials: true,
-      })
-      .subscribe((data) => {
-        this.user = data;
+    this.apiService
+      .requestWithAuthRetry<SelectedUser>(
+        'GET',
+        `${apiUrl}/protected/user/id/${_id}`
+      )
+      .subscribe({
+        next: (response) => {
+          this.user = response.body!;
+        },
+        error: (err) => {
+          console.error('Failed to fetch user', err);
+        },
       });
   }
 
@@ -97,12 +102,14 @@ export class HomeComponent implements OnInit {
   }
 
   fetchUsers() {
-    this.http
-      .get<any[]>(apiUrl + '/protected/users', { withCredentials: true })
+    this.apiService
+      .requestWithAuthRetry<ListItem[]>(
+        'GET',
+        `${apiUrl}/protected/users`
+      )
       .subscribe({
-        next: (data) => {
-          console.log('Users fetched successfully:', data);
-          this.userItems = data;
+        next: (response) => {
+          this.userItems = response.body as ListItem[];
         },
       });
   }
