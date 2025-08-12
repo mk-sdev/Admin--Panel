@@ -14,7 +14,11 @@
     </div>
   </div>
   <div *ngIf="user" class="user">
-    <input type="text" [(ngModel)]="searchQuery" placeholder="Search by id" />
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      placeholder="Search by id or email"
+    />
     <button [disabled]="!searchQuery" (click)="findUser()">search</button>
     <span *ngIf="error">{{ error }}</span>
     <button (click)="editMode = !editMode">edit</button>

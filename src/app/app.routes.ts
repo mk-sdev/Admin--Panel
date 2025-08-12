@@ -3,6 +3,7 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { guestGuard } from './guest.guard';
 import { authGuard } from './auth.guard';
+import { GrafanaComponent } from './grafana/grafana.component';
 
 export const routes: Routes = [
   {
@@ -13,7 +14,12 @@ export const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
-     canActivate: [authGuard]
+    canActivate: [authGuard],
+  },
+  {
+    path: 'logs',
+    component: GrafanaComponent,
+    canActivate: [authGuard],
   },
   { path: '**', redirectTo: 'home' },
 ];
