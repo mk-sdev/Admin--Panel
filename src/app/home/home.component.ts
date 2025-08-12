@@ -13,7 +13,6 @@ import { AuthService } from '../auth.service';
 // add error handling
 // after editing a user it should be selected
 // move some code to another service
-// password change
 //? what if changed email is someone's pending email?
 
 type SelectedUser = {
@@ -48,6 +47,26 @@ export class HomeComponent implements OnInit {
   user: SelectedUser = null;
   editMode = false;
   rolesList = Object.values(Roles);
+  newPassword = '';
+
+  changePassword() {
+    if (!this.user || !this.newPassword) return;
+    this.apiService
+      .requestWithAuthRetry(
+        'PATCH',
+        `${apiUrl}/protected/user/${this.user._id}/password`,
+        { password: this.newPassword }
+      )
+      .subscribe({
+        next: () => {
+          console.log('Password changed successfully');
+          this.newPassword = '';
+        },
+        error: (err) => {
+          console.error('Failed to change password', err);
+        },
+      });
+  }
 
   trackByUserId(index: number, user: ListItem): string {
     return user._id;

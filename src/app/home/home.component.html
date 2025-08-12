@@ -14,13 +14,9 @@
     </div>
   </div>
   <div *ngIf="user" class="user">
-    <input
-      type="text"
-      [(ngModel)]="searchQuery"
-      placeholder="Search by id"
-    />
+    <input type="text" [(ngModel)]="searchQuery" placeholder="Search by id" />
     <button [disabled]="!searchQuery" (click)="findUser()">search</button>
-    <span *ngIf="error">{{error}}</span>
+    <span *ngIf="error">{{ error }}</span>
     <button (click)="editMode = !editMode">edit</button>
     <div>_id: {{ user._id }}</div>
     <div *ngIf="!editMode">Email: {{ user.email }}</div>
@@ -52,5 +48,7 @@
 
     <button *ngIf="editMode" (click)="saveUser()">Save</button>
     <button (click)="logUserOut()">log out</button>
+    <input type="text" [(ngModel)]="newPassword" placeholder="New Password" />
+    <button (click)="changePassword()">Confirm new password</button>
   </div>
 </div>
