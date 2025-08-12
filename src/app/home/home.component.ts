@@ -12,6 +12,8 @@ import { AuthService } from '../auth.service';
 // add input for searching user by email or id
 // add error handling
 // after editing a user it should be selected
+// move some code to another service
+// password change
 //? what if changed email is someone's pending email?
 
 type SelectedUser = {
@@ -55,10 +57,20 @@ export class HomeComponent implements OnInit {
   findUser() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (emailRegex.test(this.searchQuery)) {
-      this.showUser('', this.searchQuery); 
+      this.showUser('', this.searchQuery);
     } else {
       this.showUser(this.searchQuery);
     }
+  }
+
+  logUserOut() {
+    if (!this.user) return;
+    this.apiService
+      .requestWithAuthRetry(
+        'PATCH',
+        `${apiUrl}/protected/user/${this.user._id}/logout`
+      )
+      .subscribe(() => console.log('Logged out successfully'));
   }
 
   saveUser() {
@@ -98,7 +110,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  error = ''
+  error = '';
 
   showUser(_id: string, email?: string) {
     this.apiService
@@ -113,7 +125,7 @@ export class HomeComponent implements OnInit {
           this.user = response.body!;
         },
         error: (err) => {
-          this.error = 'Failed to fetch user'; 
+          this.error = 'Failed to fetch user';
           console.error('Failed to fetch user', err);
         },
       });
