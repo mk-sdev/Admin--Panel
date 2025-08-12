@@ -51,6 +51,16 @@ export class HomeComponent implements OnInit {
     return user._id;
   }
 
+  searchQuery = '';
+  findUser() {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (emailRegex.test(this.searchQuery)) {
+      this.showUser('', this.searchQuery); 
+    } else {
+      this.showUser(this.searchQuery);
+    }
+  }
+
   saveUser() {
     if (!this.user) return;
     const { _id, ...userWithoutId } = this.user;
@@ -88,11 +98,13 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  showUser(_id: string) {
+  showUser(_id: string, email?: string) {
     this.apiService
       .requestWithAuthRetry<SelectedUser>(
         'GET',
-        `${apiUrl}/protected/user/id/${_id}`
+        _id
+          ? `${apiUrl}/protected/user/id/${_id}`
+          : `${apiUrl}/protected/user/email/${email}`
       )
       .subscribe({
         next: (response) => {
