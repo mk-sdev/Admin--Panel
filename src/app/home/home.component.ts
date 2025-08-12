@@ -8,7 +8,6 @@ import { AuthService } from '../auth.service';
 
 // TODOs:
 // optimize the list
-// create Roles enum
 // mark a user it it's you
 // show user id in the list
 // add input for searching user by email or id
@@ -19,12 +18,17 @@ import { AuthService } from '../auth.service';
 type SelectedUser = {
   _id: string;
   email: string;
-  roles: string[];
+  roles: Roles[];
   isVerified: boolean;
   provider: string;
 } | null;
 
 type ListItem = { _id: string; email: string };
+
+enum Roles {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
 @Component({
   selector: 'app-home',
   imports: [CommonModule, FormsModule],
@@ -42,7 +46,7 @@ export class HomeComponent implements OnInit {
   userItems: ListItem[] = [];
   user: SelectedUser = null;
   editMode = false;
-  rolesList = ['USER', 'ADMIN'];
+  rolesList = Object.values(Roles);
 
   saveUser() {
     if (!this.user) return;
@@ -73,8 +77,8 @@ export class HomeComponent implements OnInit {
     if (!this.user) return;
 
     if (input.checked) {
-      if (!this.user.roles.includes(role)) {
-        this.user.roles.push(role);
+      if (!this.user.roles.includes(role as Roles)) {
+        this.user.roles.push(role as Roles);
       }
     } else {
       this.user.roles = this.user.roles.filter((r) => r !== role);
@@ -103,10 +107,7 @@ export class HomeComponent implements OnInit {
 
   fetchUsers() {
     this.apiService
-      .requestWithAuthRetry<ListItem[]>(
-        'GET',
-        `${apiUrl}/protected/users`
-      )
+      .requestWithAuthRetry<ListItem[]>('GET', `${apiUrl}/protected/users`)
       .subscribe({
         next: (response) => {
           this.userItems = response.body as ListItem[];
