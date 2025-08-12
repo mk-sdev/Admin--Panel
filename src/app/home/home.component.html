@@ -8,16 +8,41 @@
     <div
       *ngFor="let user of userItems"
       class="user-item"
-      (click)="logEmail(user._id)"
+      (click)="showUser(user._id)"
     >
       {{ user.email }}
     </div>
   </div>
   <div *ngIf="user" class="user">
-    <div>{{ user._id }}</div>
-    <div>{{ user.email }}</div>
-    <div>{{ user.isVerified }}</div>
-    <div>{{ user.roles }}</div>
-    <div>{{ user.provider }}</div>
+    <button (click)="editMode = !editMode">edit</button>
+    <div>_id: {{ user._id }}</div>
+    <div *ngIf="!editMode">Email: {{ user.email }}</div>
+
+    <div *ngIf="editMode">
+      <label>
+        Email:
+        <input type="email" [(ngModel)]="user.email" placeholder="Enter email"
+      /></label>
+    </div>
+
+    <div *ngIf="!editMode">Roles: {{ user.roles }}</div>
+
+    <div *ngIf="editMode">
+      Roles:
+      <label *ngFor="let role of rolesList">
+        <input
+          type="checkbox"
+          [disabled]="role === 'USER'"
+          [value]="role"
+          (change)="onRoleChange($event)"
+          [checked]="user.roles.includes(role)"
+        />
+        {{ role }}
+      </label>
+    </div>
+    <div>Provider: {{ user.provider }}</div>
+    <div>isVerified: {{ user.isVerified }}</div>
+
+    <button *ngIf="editMode" (click)="saveUser()">Save</button>
   </div>
 </div>

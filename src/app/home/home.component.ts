@@ -3,6 +3,17 @@ import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+// TODOs: 
+// set apiUrl in a config file
+// use api.service for all api calls
+// create Roles enum
+// mark a user it it's you
+// show user id in the list
+// add input for searching user by email or id
+// add error handling
+//? what if changed email is someone's pending email?
 
 type SelectedUser = {
   _id: string;
@@ -13,7 +24,7 @@ type SelectedUser = {
 } | null;
 @Component({
   selector: 'app-home',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
@@ -29,8 +40,53 @@ export class HomeComponent implements OnInit {
   // display in the list
   userItems: { _id: string; email: string }[] = [];
   user: SelectedUser = null;
+  editMode = false;
+  rolesList = ['USER', 'ADMIN'];
 
-  logEmail(_id: string) {
+  saveUser() {
+    if (!this.user) return;
+    const { _id, ...userWithoutId } = this.user;
+    console.log(
+      '🚀 ~ HomeComponent ~ saveUser ~ userWithoutId:',
+      userWithoutId
+    );
+
+    this.http
+      .put<SelectedUser>(
+        this.apiUrl + '/protected/user/' + this.user._id,
+        userWithoutId,
+        {
+          withCredentials: true,
+        }
+      )
+      .subscribe({
+        next: (updatedUser) => {
+          this.user = updatedUser; // odświeżamy dane z odpowiedzi serwera
+          this.editMode = false; // wyłączamy tryb edycji
+          console.log('User updated successfully');
+        },
+        error: (err) => {
+          console.error('Failed to update user', err);
+        },
+      });
+  }
+
+  onRoleChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const role = input.value;
+
+    if (!this.user) return;
+
+    if (input.checked) {
+      if (!this.user.roles.includes(role)) {
+        this.user.roles.push(role);
+      }
+    } else {
+      this.user.roles = this.user.roles.filter((r) => r !== role);
+    }
+  }
+
+  showUser(_id: string) {
     this.http
       .get<SelectedUser>(this.apiUrl + '/protected/user/id/' + _id, {
         withCredentials: true,
