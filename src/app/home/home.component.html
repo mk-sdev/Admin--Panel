@@ -1,3 +1,23 @@
 <h2>Witaj w Home!</h2>
 <p>Jesteś zalogowany.</p>
 <button (click)="logout()">Wyloguj</button>
+
+<div class="container">
+  <div class="user-list">
+    <span>Lista użytkowników</span>
+    <div
+      *ngFor="let user of userItems"
+      class="user-item"
+      (click)="logEmail(user._id)"
+    >
+      {{ user.email }}
+    </div>
+  </div>
+  <div *ngIf="user" class="user">
+    <div>{{ user._id }}</div>
+    <div>{{ user.email }}</div>
+    <div>{{ user.isVerified }}</div>
+    <div>{{ user.roles }}</div>
+    <div>{{ user.provider }}</div>
+  </div>
+</div>

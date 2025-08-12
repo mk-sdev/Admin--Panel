@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+    border: 1px solid black;
+}
+
+.user-list {
+    flex: 1;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.user {
+    flex: 2;
+    padding: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin-left: 20px;
+}
