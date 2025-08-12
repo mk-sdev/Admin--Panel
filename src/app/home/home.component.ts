@@ -98,6 +98,8 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  error = ''
+
   showUser(_id: string, email?: string) {
     this.apiService
       .requestWithAuthRetry<SelectedUser>(
@@ -111,6 +113,7 @@ export class HomeComponent implements OnInit {
           this.user = response.body!;
         },
         error: (err) => {
+          this.error = 'Failed to fetch user'; 
           console.error('Failed to fetch user', err);
         },
       });

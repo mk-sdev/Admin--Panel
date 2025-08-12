@@ -19,7 +19,8 @@
       [(ngModel)]="searchQuery"
       placeholder="Search by id"
     />
-    <button (click)="findUser()">search</button>
+    <button [disabled]="!searchQuery" (click)="findUser()">search</button>
+    <span *ngIf="error">{{error}}</span>
     <button (click)="editMode = !editMode">edit</button>
     <div>_id: {{ user._id }}</div>
     <div *ngIf="!editMode">Email: {{ user.email }}</div>
