@@ -7,7 +7,6 @@ import { apiUrl } from '../app.config';
 import { AuthService } from '../auth.service';
 
 // TODOs:
-// optimize the list
 // mark a user it it's you
 // show user id in the list
 // add input for searching user by email or id
@@ -47,6 +46,10 @@ export class HomeComponent implements OnInit {
   user: SelectedUser = null;
   editMode = false;
   rolesList = Object.values(Roles);
+
+  trackByUserId(index: number, user: ListItem): string {
+    return user._id;
+  }
 
   saveUser() {
     if (!this.user) return;

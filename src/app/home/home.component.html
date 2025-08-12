@@ -6,7 +6,7 @@
   <div class="user-list">
     <span>Lista użytkowników</span>
     <div
-      *ngFor="let user of userItems"
+      *ngFor="let user of userItems; trackBy: trackByUserId"
       class="user-item"
       (click)="showUser(user._id)"
     >
