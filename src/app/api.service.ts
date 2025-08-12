@@ -2,13 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
-
+import { apiUrl } from './app.config';
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000';
-
   constructor(private http: HttpClient) {}
 
   private refreshTokens(): Observable<void> {
@@ -17,7 +15,7 @@ export class ApiService {
     });
 
     return this.http.patch<void>(
-      `${this.apiUrl}/refresh`,
+      `${apiUrl}/refresh`,
       {},
       { headers, withCredentials: true }
     );

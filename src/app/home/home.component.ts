@@ -4,15 +4,17 @@ import { AuthService } from '../auth.service';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { apiUrl } from '../app.config';
 
-// TODOs: 
-// set apiUrl in a config file
+// TODOs:
 // use api.service for all api calls
+// optimize the list
 // create Roles enum
 // mark a user it it's you
 // show user id in the list
 // add input for searching user by email or id
 // add error handling
+// after editing a user it should be selected
 //? what if changed email is someone's pending email?
 
 type SelectedUser = {
@@ -35,8 +37,6 @@ export class HomeComponent implements OnInit {
     private http: HttpClient
   ) {}
 
-  apiUrl = 'http://localhost:3000';
-
   // display in the list
   userItems: { _id: string; email: string }[] = [];
   user: SelectedUser = null;
@@ -46,14 +46,10 @@ export class HomeComponent implements OnInit {
   saveUser() {
     if (!this.user) return;
     const { _id, ...userWithoutId } = this.user;
-    console.log(
-      '🚀 ~ HomeComponent ~ saveUser ~ userWithoutId:',
-      userWithoutId
-    );
 
     this.http
       .put<SelectedUser>(
-        this.apiUrl + '/protected/user/' + this.user._id,
+        apiUrl + '/protected/user/' + this.user._id,
         userWithoutId,
         {
           withCredentials: true,
@@ -61,8 +57,8 @@ export class HomeComponent implements OnInit {
       )
       .subscribe({
         next: (updatedUser) => {
-          this.user = updatedUser; // odświeżamy dane z odpowiedzi serwera
-          this.editMode = false; // wyłączamy tryb edycji
+          this.user = updatedUser;
+          this.editMode = false;
           console.log('User updated successfully');
         },
         error: (err) => {
@@ -88,7 +84,7 @@ export class HomeComponent implements OnInit {
 
   showUser(_id: string) {
     this.http
-      .get<SelectedUser>(this.apiUrl + '/protected/user/id/' + _id, {
+      .get<SelectedUser>(apiUrl + '/protected/user/id/' + _id, {
         withCredentials: true,
       })
       .subscribe((data) => {
@@ -102,7 +98,7 @@ export class HomeComponent implements OnInit {
 
   fetchUsers() {
     this.http
-      .get<any[]>(this.apiUrl + '/protected/users', { withCredentials: true })
+      .get<any[]>(apiUrl + '/protected/users', { withCredentials: true })
       .subscribe({
         next: (data) => {
           console.log('Users fetched successfully:', data);
