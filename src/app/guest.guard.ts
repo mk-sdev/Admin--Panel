@@ -9,10 +9,10 @@ export const guestGuard: CanActivateFn = async () => {
   try {
     const loggedIn = await auth.isLoggedIn();
     if (loggedIn) {
-      return true;
-    } else {
       router.navigate(['/home']);
       return false;
+    } else {
+      return true;
     }
   } catch {
     router.navigate(['/home']);
