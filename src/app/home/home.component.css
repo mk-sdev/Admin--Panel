@@ -64,12 +64,12 @@ h3 {
 
 .user > div:first-child input {
   flex:1 !important;
-  background-color: red;
+  /* background-color: red; */
 }
 
 .user > div:first-child button{
   flex:1;
-  background-color: red;
+  /* background-color: red; */
   width: 10%;
 }
 
