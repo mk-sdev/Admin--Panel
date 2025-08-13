@@ -1,4 +1,24 @@
-# AdminPanel
+# 📋 Admin Panel
+
+A lightweight admin interface built with Angular, designed to give administrators full control over user management and quick access to system logs through an embedded Grafana dashboard.
+
+## ✨ Features
+
+✅ **Role-based authorization**  
+ Only users with the `admin` role can access the panel.
+
+✅ **User management**  
+ View a full list of users, change their passwords, assign roles, or force logout from all devices when needed.
+
+✅ **Embedded Grafana logs**  
+ Monitor application logs directly inside the panel thanks to an integrated Grafana view — no context switching needed.
+
+## 🛠 Tech Stack
+
+- **Angular** – modern and modular frontend framework
+- **TypeScript** – strong typing for safer and more maintainable code
+- **RxJS** – reactive programming for clean async data flows
+
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.5.
 
