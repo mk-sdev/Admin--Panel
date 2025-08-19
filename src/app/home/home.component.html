@@ -3,7 +3,7 @@
 
   <div class="container">
     <div class="user-list">
-      <h3>List of users</h3>
+      <h3 i18n>List of users</h3>
       <div
         *ngFor="let user of userItems; trackBy: trackByUserId"
         class="user-item"
@@ -19,13 +19,14 @@
           type="text"
           [(ngModel)]="searchQuery"
           placeholder="Search by id or email"
+          i18n-placeholder
         />
-        <button [disabled]="!searchQuery" (click)="findUser()">search</button>
+        <button i18n [disabled]="!searchQuery" (click)="findUser()">search</button>
       </div>
       <span *ngIf="error">{{ error }}</span>
 
       <div id="user-attributes">
-        <button (click)="editMode = !editMode">edit</button>
+        <button i18n (click)="editMode = !editMode">edit</button>
         <div>_id: {{ user._id }}</div>
         <div *ngIf="!editMode">Email: {{ user.email }}</div>
         <div *ngIf="editMode">
@@ -55,10 +56,10 @@
         <div>isVerified: {{ user.isVerified }}</div>
       </div>
 
-      <button *ngIf="editMode" (click)="saveUser()">Save</button>
-      <button (click)="logUserOut()">log out</button>
-      <input type="text" [(ngModel)]="newPassword" placeholder="New Password" />
-      <button (click)="changePassword()">Confirm new password</button>
+      <button i18n *ngIf="editMode" (click)="saveUser()">Save</button>
+      <button i18n (click)="logUserOut()">log out</button>
+      <input i18n-placeholder type="text" [(ngModel)]="newPassword" placeholder="New Password" />
+      <button i18n (click)="changePassword()">Confirm new password</button>
     </div>
   </div>
 </div>
