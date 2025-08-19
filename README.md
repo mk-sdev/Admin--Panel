@@ -10,6 +10,9 @@ A lightweight admin interface built with Angular, designed to give administrator
 ✅ **User management**  
  View a full list of users, change their passwords, assign roles, or force logout from all devices when needed.
 
+✅ **Internationalization (i18n)**
+ Built-in Angular i18n support with multiple language versions (English, Polish), allowing easy localization without extra libraries.
+
 ✅ **Embedded Grafana logs**  
  Monitor application logs directly inside the panel thanks to an integrated Grafana view — no context switching needed.
 
@@ -18,6 +21,7 @@ A lightweight admin interface built with Angular, designed to give administrator
 - **Angular** – modern and modular frontend framework
 - **TypeScript** – strong typing for safer and more maintainable code
 - **RxJS** – reactive programming for clean async data flows
+- **Vite** – fast dev server and bundler
 
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.5.
