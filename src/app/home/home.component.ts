@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ApiService } from '../api.service';
+// import { ApiService } from '../api.service';
 import { apiUrl } from '../app.config';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { HttpClient } from '@angular/common/http';
 
 // TODOs:
 // mark a user it it's you
@@ -35,9 +36,7 @@ enum Roles {
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  constructor(
-    private apiService: ApiService
-  ) {}
+  constructor(private http: HttpClient) {}
 
   // display in the list
   userItems: ListItem[] = [];
@@ -48,12 +47,10 @@ export class HomeComponent implements OnInit {
 
   changePassword() {
     if (!this.user || !this.newPassword) return;
-    this.apiService
-      .requestWithAuthRetry(
-        'PATCH',
-        `${apiUrl}/protected/user/${this.user._id}/password`,
-        { password: this.newPassword }
-      )
+    this.http
+      .patch(`${apiUrl}/protected/user/${this.user._id}/password`, {
+        password: this.newPassword,
+      })
       .subscribe({
         next: () => {
           console.log('Password changed successfully');
@@ -81,11 +78,8 @@ export class HomeComponent implements OnInit {
 
   logUserOut() {
     if (!this.user) return;
-    this.apiService
-      .requestWithAuthRetry(
-        'PATCH',
-        `${apiUrl}/protected/user/${this.user._id}/logout`
-      )
+    this.http
+      .patch(`${apiUrl}/protected/user/${this.user._id}/logout`, {})
       .subscribe(() => console.log('Logged out successfully'));
   }
 
@@ -93,22 +87,16 @@ export class HomeComponent implements OnInit {
     if (!this.user) return;
     const { _id, ...userWithoutId } = this.user;
 
-    this.apiService
-      .requestWithAuthRetry(
-        'PUT',
-        `${apiUrl}/protected/user/${_id}`,
-        userWithoutId
-      )
-      .subscribe({
-        next: (response) => {
-          this.user = response.body as SelectedUser;
-          this.editMode = false;
-          console.log('User updated successfully');
-        },
-        error: (err) => {
-          console.error('Failed to update user', err);
-        },
-      });
+    this.http.put(`${apiUrl}/protected/user/${_id}`, userWithoutId).subscribe({
+      next: (user) => {
+        this.user = user as SelectedUser;
+        this.editMode = false;
+        console.log('User updated successfully');
+      },
+      error: (err) => {
+        console.error('Failed to update user', err);
+      },
+    });
   }
 
   onRoleChange(event: Event) {
@@ -129,16 +117,15 @@ export class HomeComponent implements OnInit {
   error = '';
 
   showUser(_id: string, email?: string) {
-    this.apiService
-      .requestWithAuthRetry<SelectedUser>(
-        'GET',
+    this.http
+      .get<SelectedUser>(
         _id
           ? `${apiUrl}/protected/user/id/${_id}`
           : `${apiUrl}/protected/user/email/${email}`
       )
       .subscribe({
-        next: (response) => {
-          this.user = response.body!;
+        next: (user) => {
+          this.user = user;
         },
         error: (err) => {
           this.error = 'Failed to fetch user';
@@ -152,12 +139,10 @@ export class HomeComponent implements OnInit {
   }
 
   fetchUsers() {
-    this.apiService
-      .requestWithAuthRetry<ListItem[]>('GET', `${apiUrl}/protected/users`)
-      .subscribe({
-        next: (response) => {
-          this.userItems = response.body as ListItem[];
-        },
-      });
+    this.http.get<ListItem[]>(`${apiUrl}/protected/users`).subscribe({
+      next: (users) => {
+        this.userItems = users;
+      },
+    });
   }
 }
